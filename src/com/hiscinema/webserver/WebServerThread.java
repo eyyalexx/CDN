@@ -1,9 +1,7 @@
 package com.hiscinema.webserver;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -53,8 +51,6 @@ public class WebServerThread extends Thread {
             
             if(request != null){
             	FileSystem.printFile(request[1], out);
-            }else{
-            	out.println("<h1>400 Bad Request</h1>");
             }
             
             
