@@ -8,7 +8,7 @@ public class applicationClient {
 	private static final String hostadress = "localhost";
 	private static final int portNumber = 5000;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		String url = "GET /index.html HTTP/1.1";
 
