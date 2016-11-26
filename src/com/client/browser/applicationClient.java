@@ -1,7 +1,10 @@
 //package com.client.browser;
 
+import java.awt.*;
+import java.awt.Dimension;
 import java.io.*;
 import java.net.*;
+import javax.swing.*;
 
 public class applicationClient {
 
@@ -10,9 +13,31 @@ public class applicationClient {
 	private static final int portNumber = 5000;
 	
 	
-	
+/*
+    private static void createAndShowGUI() {
+        //Create and set up the window.
+        JFrame frame = new JFrame("FrameDemo");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+ 
+        JLabel emptyLabel = new JLabel("");
+        emptyLabel.setPreferredSize(new Dimension(175, 100));
+        frame.getContentPane().add(emptyLabel, BorderLayout.CENTER);
+ 
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
+    }
+*/
 
 	public static void main(String[] args) throws IOException {
+		
+/*
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createAndShowGUI();
+            }
+        });
+*/
 		
 		String url = "GET /index.html HTTP/1.1";
 
@@ -29,6 +54,7 @@ public class applicationClient {
 
         	//Write to socket
         	out.println(url);
+        	//out.println("\r\n");
         	out.println("exit");
         	out.flush();
         	//out.close();
