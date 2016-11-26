@@ -8,7 +8,8 @@ import java.net.Socket;
 
 public class WebServerThread extends Thread {
     protected Socket socket;
-
+    SendHTTPMessage http;
+    
     public WebServerThread(Socket clientSocket) {
         this.socket = clientSocket;
     }
@@ -22,48 +23,58 @@ public class WebServerThread extends Thread {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream());
             
+            //to reply to the http message sent
+            http = new SendHTTPMessage(out);
             
-            // read the data sent. We basically ignore it,
-            // stop reading once a blank line is hit. This
-            // blank line signals the end of the client HTTP
-            // headers.
+            // read the data sent. We stop reading once a blank line is hit
             String str = ".";
-            String[] request = null;
-            while (str != null && !str.equals("")){
+            String request = "";
+            while (!str.equals("")){
               str = in.readLine();
-              
-              
-              if(str.length() > 2 && str.substring(0, 3).equals("GET")){
-            	  request = str.split(" ");
-            	  
-            	  
-              }else{
-            	  
-              }
-              
-              
-              System.out.println(str);
+              request += str+"\n";
             }
             
-            for(String a : request){
-            	System.out.println("List= "+a);
-            }
+            System.out.println(request);
             
-            if(request != null){
-            	FileSystem.printFile(request[1], out);
-            }
+            parseHTTP(request);
             
-            
-            out.flush();
             socket.close();
             
-            
-            
         } catch (IOException e) {
-            out.println("<h1>500 Internal Server Error</h1>");
+            
         }
         
-        
-      
     }
+    
+    private void parseHTTP(String req){
+    	
+    	boolean badRequest = true;
+    	
+    	//lines of the http req
+    	String[] lines = req.split("\n");
+    	
+    	for(int i =0; i< lines.length; i++){
+    		//if the line is a GET request
+    		if(lines[i].length() > 2 && lines[i].substring(0, 3).equals("GET")){
+    			badRequest = false;
+    			
+    			//split the get request 
+    			String[] get = lines[i].split(" ");
+    			
+    			//incorrect version of http
+    			if(!get[2].equals(SendHTTPMessage.HTTPVERSION)){
+    				http.sendMessage(505);
+    			}else{
+    				//use the url from the request to send the requested file
+        			FileSystem.printFile(get[1], http); 
+    			}
+    			
+    		}
+    	}
+    	//the request is invalid
+    	if(badRequest){
+    		http.sendMessage(400);
+    	}
+    }
+    
 }

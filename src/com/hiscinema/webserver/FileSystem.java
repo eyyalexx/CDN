@@ -16,7 +16,7 @@ public class FileSystem {
 	 * 
 	 * @param path the path to the file being requested
 	 */
-	public static void printFile(String path, PrintWriter out){
+	public static void printFile(String path, SendHTTPMessage http){
 		BufferedReader br = null;
 
 		if(path.equals("/")){
@@ -27,38 +27,29 @@ public class FileSystem {
 		try {
 			
 			File f = new File(dir+path);
+			//checks if the file requested exists
 			if(f.exists() && !f.isDirectory()){
 				String sCurrentLine;
+				String result= "";
 				
 				br = new BufferedReader(new FileReader(dir+path));
 	
+				//read file line by line
 				while ((sCurrentLine = br.readLine()) != null) {
-					out.println(sCurrentLine);
+					result+= sCurrentLine+"\n";
 				}
-			}else{
+				//send http message with code 200
+				http.sendMessage(200, result);
 				
-				out.println("<h1>404 Not Found</h1>");
+				br.close();
 				
+			}else{//if file does not exist
+				http.sendMessage(404);
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (br != null)br.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
 		}
-
-		
-		
-		
-		
-		
 	}
-	
-	
-	
 	
 }
