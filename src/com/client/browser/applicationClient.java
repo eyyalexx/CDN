@@ -1,48 +1,20 @@
-//package com.client.browser;
+package com.client.browser;
 
-import java.awt.*;
-import java.awt.Dimension;
 import java.io.*;
 import java.net.*;
-import javax.swing.*;
 
 public class applicationClient {
 
 	//private static final String hostadress = "localhost";
-	private static final String hostadress = "10.16.112.207";
+	private static final String hostadress = "localhost";
 	private static final int portNumber = 5000;
 	
 	
-/*
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("FrameDemo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
- 
-        JLabel emptyLabel = new JLabel("");
-        emptyLabel.setPreferredSize(new Dimension(175, 100));
-        frame.getContentPane().add(emptyLabel, BorderLayout.CENTER);
- 
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-    }
-*/
-
 	public static void main(String[] args) throws IOException {
 		
-/*
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-*/
-		
-		String url = "GET /index.html HTTP/1.1";
+		String url = "GET / HTTP/1.1";
 
         try {
-
 
            Socket socket = new Socket(hostadress, portNumber);
 
@@ -52,31 +24,33 @@ public class applicationClient {
 		   BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
          
 
-        	//Write to socket
+        	//write the http request
         	out.println(url);
-        	//out.println("\r\n");
-        	out.println("exit");
+        	out.println("");
         	out.flush();
-        	//out.close();
         	
+        	//the http header 
+        	String str = ".";
+        	int dataLength = 0;
         	
-        	String inputLine;
-			StringBuffer response = new StringBuffer();
-
-			
-			
-			//System.out.println("Hi");
-			while ((inputLine = in.readLine()) != null) {
-				//System.out.print("Hello");
-				response.append(inputLine);
-			}
-			//in.close();
-			
-			
-			
-			System.out.println(response.toString());
-			//System.out.println("Hello World!");
-
+            while (!str.equals("")){
+            	str = in.readLine();
+            	
+            	//in case content length is required in the future
+            	String[] options = str.split(": ");
+            	if(options[0].equals("Content-Length")){
+            		dataLength = Integer.parseInt(options[1]);
+            	}
+            }
+            //content length
+            System.out.println(dataLength);
+            
+            //read the data sent
+            String data = in.readLine();
+            
+            System.out.println(data);
+            
+            socket.close();
 
         } catch (UnknownHostException e1) {
 

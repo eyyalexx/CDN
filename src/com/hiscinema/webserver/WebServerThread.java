@@ -41,7 +41,7 @@ public class WebServerThread extends Thread {
             socket.close();
             
         } catch (IOException e) {
-            
+            e.printStackTrace();
         }
         
     }
@@ -66,7 +66,7 @@ public class WebServerThread extends Thread {
     				http.sendMessage(505);
     			}else{
     				//use the url from the request to send the requested file
-        			FileSystem.printFile(get[1], http); 
+        			FileSystem.printFile(get[1], http);
     			}
     			
     		}
