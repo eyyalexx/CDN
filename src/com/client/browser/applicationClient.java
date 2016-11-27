@@ -16,11 +16,10 @@ public class applicationClient {
 
         try {
 
+           
+           //Send the request to Webserver.
            Socket socket = new Socket(hostadress, portNumber);
-
-
            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-
 		   BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
          
 
