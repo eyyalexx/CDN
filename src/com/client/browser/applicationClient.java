@@ -2,6 +2,8 @@ package com.client.browser;
 
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
+
 
 public class applicationClient {
 
@@ -10,10 +12,10 @@ public class applicationClient {
 	private static final int portNumber = 5000;
 	
 	
-	public static void main(String[] args) throws IOException {
-		
-		String url = "GET / HTTP/1.1";
+	private static String getData(String ip, int port, String url) {
 
+        String data = "";
+        
         try {
 
            
@@ -42,9 +44,11 @@ public class applicationClient {
             	}
             }
             //content length
-            System.out.println(dataLength);
+            //System.out.println(dataLength);
             
-            String data = "";
+            
+            //
+
             int dataread = 0;
             
             while(dataread<dataLength){
@@ -53,7 +57,7 @@ public class applicationClient {
             	data+= str+"\n";
             	dataread = data.length();
             }
-            System.out.println(data);
+            //System.out.println(data);
             
             socket.close();
 
@@ -66,8 +70,32 @@ public class applicationClient {
             System.err.println("Couldn't get I/O for the connection to " +
                 hostadress);
             System.exit(1);
-        } 
-
+        }
+        
+        return data;
+		
+	}
+	
+	public static void main(String[] args) {
+		
+		String url = "GET / HTTP/1.1";
+		String userInput;
+		
+		String data = getData(hostadress, portNumber, url);
+	
+		String[] options = data.split("\n");
+		
+		for(int i = 0; i < options.length; i++){
+			System.out.println("Link " + (i+1) + ": " +options[i]);
+		}
+		
+	    Scanner in = new Scanner(System.in);
+		System.out.print("Select your link(1,2,3 or 4): ");
+		userInput = in.nextLine();
+		System.out.println("You selected: " + userInput + ", " + options[Integer.parseInt(userInput)]);
+		
+		
+		
 	}
 
 }
