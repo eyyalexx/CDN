@@ -20,7 +20,7 @@ public class SendHTTPMessage {
 	
 	public void sendMessage(int httpCode, String data){
 		
-		String codeMessage = httpCodes.get(httpCodes);
+		String codeMessage = httpCodes.get(httpCode);
 		out.println(HTTPVERSION+" "+httpCode+" "+codeMessage);//+crlf);
 		out.println("Content-Length: "+data.length());
 		out.println("");//out.println(crlf);
