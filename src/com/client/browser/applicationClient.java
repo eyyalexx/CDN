@@ -44,9 +44,15 @@ public class applicationClient {
             //content length
             System.out.println(dataLength);
             
-            //read the data sent
-            String data = in.readLine();
+            String data = "";
+            int dataread = 0;
             
+            while(dataread<dataLength){
+            	//read the data sent
+            	str = in.readLine();
+            	data+= str+"\n";
+            	dataread = data.length();
+            }
             System.out.println(data);
             
             socket.close();
