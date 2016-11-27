@@ -4,19 +4,26 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 public class FileSystem {
 
-	static String dir = "public";
+	private String dir;
 	final static String DEFAULT_FILE = "/index.html";
 	
+	
+	public FileSystem(String dir){
+		this.dir = dir;
+	}
+	
+	public String getDir(){
+		return dir;
+	}
 	
 	/**
 	 * 
 	 * @param path the path to the file being requested
 	 */
-	public static void printFile(String path, SendHTTPMessage http){
+	public void printFile(String path, SendHTTPMessage http){
 		BufferedReader br = null;
 
 		if(path.equals("/")){

@@ -7,11 +7,14 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class WebServerThread extends Thread {
-    protected Socket socket;
-    SendHTTPMessage http;
     
-    public WebServerThread(Socket clientSocket) {
+	protected Socket socket;
+    private SendHTTPMessage http;
+    private FileSystem fs;
+    
+    public WebServerThread(Socket clientSocket, FileSystem fs) {
         this.socket = clientSocket;
+        this.fs = fs;
     }
 
     public void run() {
@@ -66,7 +69,7 @@ public class WebServerThread extends Thread {
     				http.sendMessage(505);
     			}else{
     				//use the url from the request to send the requested file
-        			FileSystem.printFile(get[1], http);
+        			fs.printFile(get[1], http);
     			}
     			
     		}

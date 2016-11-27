@@ -1,12 +1,14 @@
-package com.hiscinema.webserver;
+package com.her.CDN;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class WebServer {
+import com.hiscinema.webserver.*;
 
-    static final int PORT = 5000;
+public class CDNServer {
+
+    static final int PORT = 5001;
 
     public static void main(String args[]) throws IOException {
     	
@@ -14,7 +16,7 @@ public class WebServer {
         ServerSocket serverSocket = null;
         Socket socket = null;
         
-        FileSystem fs = new FileSystem("public");
+        FileSystem fs = new FileSystem("public2");
 
         try {
             serverSocket = new ServerSocket(PORT);
