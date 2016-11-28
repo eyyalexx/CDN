@@ -16,7 +16,7 @@ public class localdns {
             sock = new DatagramSocket(5000);
              
             //buffer to receive incoming data
-            byte[] buffer = new byte[10024];
+            byte[] buffer = new byte[1024];
             DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
              
             //2. Wait for an incoming data
