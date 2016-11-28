@@ -11,7 +11,7 @@ public class applicationClient {
 	private static final String hostadress = "localhost";
 	private static final int portNumber = 5000;
 	
-	//TCP
+	//TCP connection to WebServer
 	private static String getData(String ip, int port, String url) {
 
         String data = "";
@@ -76,7 +76,7 @@ public class applicationClient {
 		
 	}
 	
-	
+	//UDP conncetion to local DNS
 	public static void getIP(){			//Put (String URL) for argument later.
         DatagramSocket sock = null;
         int port = 5000;
@@ -123,6 +123,7 @@ public class applicationClient {
 		//return "Hello";
 	}
 	
+	//Main
 	public static void main(String[] args) {
 		
 		String url = "GET / HTTP/1.1";
