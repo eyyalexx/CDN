@@ -6,10 +6,9 @@ public class localdns {
 
 	public static void main(String[] args) {
 		
+		
+		
 		DatagramSocket sock = null;
-		
-		
-	
         
         try
         {
