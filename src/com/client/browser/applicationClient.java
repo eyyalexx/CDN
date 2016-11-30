@@ -179,7 +179,6 @@ public class applicationClient {
             byte[] data = reply.getData();
             s = new String(data, 0, reply.getLength());
             
-            
             socket.close();
             
         }
@@ -202,17 +201,7 @@ public class applicationClient {
 		Packet p = getData(WEBSERVERIP, WEBPORT, urlToQueryWebServer);
 	    
 		String path = p.getFile();
-		String data = "";
-		
-		String sCurrentLine;
-		BufferedReader br;
-		if(path != null){
-			//read the file
-			br = new BufferedReader(new FileReader(path));
-			while ((sCurrentLine = br.readLine()) != null) {
-				data +=sCurrentLine+"\n";
-			}
-		}
+		String data = readFile(path);
 		
 		//parse the packet data for the links
 		String[] options = data.split("\n");
@@ -232,11 +221,37 @@ public class applicationClient {
 		//parse the host name from the url
 		String hostFromURL = urlSelected.getHost();
 		
-		//String ipOfHost = getIP(LDNSIP, LDNSPORT, hostFromURL);
+		System.out.println(hostFromURL);
+		
+		String ipOfHost ;//= getIP(LDNSIP, LDNSPORT, hostFromURL);
+		
+		ipOfHost = "localhost";
+		
+		//query the web server
+		p = getData(ipOfHost, 5001, urlSelected.getFile());
+	    
+		path = p.getFile();
+		//data = readFile(path);
 		
 		
 		
+		System.out.println(path);
 		
+	}
+	
+	public static String readFile(String path) throws IOException{
+		String data = "";
+		BufferedReader br;
+		String sCurrentLine;
+		if(path != null){
+			//read the file
+			br = new BufferedReader(new FileReader(path));
+			while ((sCurrentLine = br.readLine()) != null) {
+				data +=sCurrentLine+"\n";
+			}
+		}
+		
+		return data;
 	}
 
 }
