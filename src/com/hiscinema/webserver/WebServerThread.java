@@ -3,6 +3,7 @@ package com.hiscinema.webserver;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -19,15 +20,15 @@ public class WebServerThread extends Thread {
 
     public void run() {
     	System.out.println("New Client connected");
-        BufferedReader in = null;
-        PrintWriter out = null;
-        
+
         try {
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream());
+        	
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            
+            OutputStream os = socket.getOutputStream();
             
             //to reply to the http message sent
-            http = new SendHTTPMessage(out);
+            http = new SendHTTPMessage(os);
             
             // read the data sent. We stop reading once a blank line is hit
             String str = ".";
@@ -41,6 +42,7 @@ public class WebServerThread extends Thread {
             
             parseHTTP(request);
             
+            os.close();
             socket.close();
             
         } catch (IOException e) {
@@ -71,7 +73,6 @@ public class WebServerThread extends Thread {
     				//use the url from the request to send the requested file
         			fs.printFile(get[1], http);
     			}
-    			
     		}
     	}
     	//the request is invalid

@@ -11,52 +11,130 @@ public class applicationClient {
 	private static final String WEBSERVERIP = "localhost";
 	private static final int WEBPORT = 5000;
 	private static final int LDNSPORT = 5003;
+	private static final String HTTPVERSION = "HTTP/1.1";
+	private static final int MAX_PACKET_SIZE = 65535;
+	
+	public static boolean createDir(String fname){
+		File theDir = new File(fname);
+		boolean result = false;
+		// if the directory does not exist, create it
+		if (!theDir.exists()) {
+		    try{
+		        theDir.mkdir();
+		        result = true;
+		    } 
+		    catch(SecurityException se){
+		        
+		    }
+		}
+		return result;	
+	}
 	
 	
-	
-	//TCP connection to WebServer
-	private static String getData(String webServIP, int webServPort, String url) {
-
-        String data = "";
+	//TCP connection, Get file from web server
+	private static Packet getData(String webServIP, int webServPort, String url) {
+        
+        String request = "GET "+ url+" "+HTTPVERSION+"\n\n";
+        
+        Packet packet = new Packet();
         
         try {
 
-           
-           //Send the request to Webserver.
-           Socket socket = new Socket(webServIP, webServPort);
-           PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-		   BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-         
+			// Send the request to Webserver.
+			Socket socket = new Socket(webServIP, webServPort);
 
-        	//write the http request
-        	out.println(url);
-        	out.println("");
-        	out.flush();
-        	
-        	//the http header 
-        	String str = ".";
-        	int dataLength = 0;
-        	
-            while (!str.equals("")){
-            	str = in.readLine();
-            	
-            	//parse the content length
-            	String[] options = str.split(": ");
-            	if(options[0].equals("Content-Length")){
-            		dataLength = Integer.parseInt(options[1]);
-            	}
-            }
-            
-
-            int dataread = 0;
-            
-            while(dataread<dataLength){
-            	//read the data sent
-            	str = in.readLine();
-            	data+= str+"\n";
-            	dataread = data.length();
-            }
-            
+			InputStream sockIn = socket.getInputStream();
+			OutputStream sockOut = socket.getOutputStream();
+			
+			
+			// write the http request
+			sockOut.write(request.getBytes());
+			
+			byte[] bytes = new byte[MAX_PACKET_SIZE];
+			//wait for reply
+			
+			int count;
+			boolean headerRead = false;
+			String header ="";
+			byte[] data = null;
+			
+			
+			String path = "cache/"+webServIP+webServPort;
+			
+			createDir(path);
+			
+			FileOutputStream out = new FileOutputStream(path+url);
+			
+			
+	        while ((count = sockIn.read(bytes)) > 0) {
+	        	//first packet
+	        	if(!headerRead){
+	        		String dataRead = new String(bytes, 0, count);
+	        		//split the http message by lines
+	        		String[] lines = dataRead.split("\r\n", -1);
+	        		
+	        		int i = 0;
+	        		while(!lines[i].equals("")){
+	        			header+=lines[i]+"\n";
+	        			i++;
+	        		}
+	        		
+	        		//the index of the data
+	        		i++;
+	        		if(i < lines.length){
+	        			data = lines[i].getBytes();
+	        			out.write(data);
+	        		}
+	        		
+	        		//dont look for header after
+	        		headerRead = true;
+	        	}else{ //if only data
+	        		data = bytes;
+	        		out.write(data, 0, count);
+	        	}
+	        	
+	        }
+	        packet.addHeader(header);
+	        if(data != null){
+	        	packet.addFile(path+url);
+	        }
+	        
+	        
+	        out.close();
+			
+			
+			//parse reply and the http header
+			/*String str = ".";
+			int dataLength = 0;
+			
+			String header ="";
+			
+			while (!str.equals("")) {
+				str = br.readLine();
+				header+= str+"\n";
+				// parse the content length
+				String[] options = str.split(": ");
+				if (options[0].equals("Content-Length")) {
+					dataLength = Integer.parseInt(options[1]);
+				}
+			}
+			packet.addHeader(header);
+			
+			
+			byte[] bytes = new byte[dataLength]; // 10 is extra buffer space 
+			
+			int count;	
+			//read the data
+			while((count = sockIn.read(bytes)) < 0){
+				System.out.println(count);
+			}
+			
+			
+			packet.addData(bytes);
+			*/
+            //fos.close();
+            sockOut.close();
+            sockIn.close();
             socket.close();
 
         } catch (UnknownHostException e1) {
@@ -65,12 +143,10 @@ public class applicationClient {
             System.exit(1);
 
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to "+ webServIP);
+            e.printStackTrace();
             System.exit(1);
         }
-        
-        return data;
-		
+        return packet;
 	}
 	
 	
@@ -99,10 +175,9 @@ public class applicationClient {
             DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
             socket.receive(reply);
             
-            //parse the reply for he ip address
+            //parse the reply for the ip address
             byte[] data = reply.getData();
             s = new String(data, 0, reply.getLength());
-            
             
             
             socket.close();
@@ -119,14 +194,27 @@ public class applicationClient {
 	}
 	
 	//Main
-	public static void main(String[] args) throws MalformedURLException {
+	public static void main(String[] args) throws IOException {
 		
-		String urlToQueryWebServer = "GET / HTTP/1.1";
+		String urlToQueryWebServer = "/index.html";
 		
 		//query the web server
-		String data = getData(WEBSERVERIP, WEBPORT, urlToQueryWebServer);
-	
-		//parse the results for the links
+		Packet p = getData(WEBSERVERIP, WEBPORT, urlToQueryWebServer);
+	    
+		String path = p.getFile();
+		String data = "";
+		
+		String sCurrentLine;
+		BufferedReader br;
+		if(path != null){
+			//read the file
+			br = new BufferedReader(new FileReader(path));
+			while ((sCurrentLine = br.readLine()) != null) {
+				data +=sCurrentLine+"\n";
+			}
+		}
+		
+		//parse the packet data for the links
 		String[] options = data.split("\n");
 		for(int i = 0; i < options.length; i++){
 			System.out.println("Link " + (i+1) + ": " +options[i]);
@@ -144,7 +232,7 @@ public class applicationClient {
 		//parse the host name from the url
 		String hostFromURL = urlSelected.getHost();
 		
-		String ipOfHost = getIP(LDNSIP, LDNSPORT, hostFromURL);
+		//String ipOfHost = getIP(LDNSIP, LDNSPORT, hostFromURL);
 		
 		
 		
