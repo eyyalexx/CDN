@@ -101,38 +101,6 @@ public class applicationClient {
 	        
 	        
 	        out.close();
-			
-			
-			//parse reply and the http header
-			/*String str = ".";
-			int dataLength = 0;
-			
-			String header ="";
-			
-			while (!str.equals("")) {
-				str = br.readLine();
-				header+= str+"\n";
-				// parse the content length
-				String[] options = str.split(": ");
-				if (options[0].equals("Content-Length")) {
-					dataLength = Integer.parseInt(options[1]);
-				}
-			}
-			packet.addHeader(header);
-			
-			
-			byte[] bytes = new byte[dataLength]; // 10 is extra buffer space 
-			
-			int count;	
-			//read the data
-			while((count = sockIn.read(bytes)) < 0){
-				System.out.println(count);
-			}
-			
-			
-			packet.addData(bytes);
-			*/
-            //fos.close();
             sockOut.close();
             sockIn.close();
             socket.close();
