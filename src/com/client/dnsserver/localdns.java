@@ -1,12 +1,16 @@
 package com.client.dnsserver;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class localdns {
 
 	public static void main(String[] args) {
 		
+		ArrayList<DnsRecord> records = new ArrayList<DnsRecord>(); 
 		
+		records.add(new DnsRecord("video.hiscinema.com", "localhost", "A"));
+		records.add(new DnsRecord());
 		
 		DatagramSocket sock = null;
         
@@ -33,7 +37,8 @@ public class localdns {
                  
                 //echo the details of incoming data - client ip : client port - client message
                 //echo(incoming.getAddress().getHostAddress() + " : " + incoming.getPort() + " - " + s);
-                 
+                
+                
                 s = "OK : " + s;
                 
                 //send back to client
