@@ -127,11 +127,11 @@ public class ApplicationClient {
         {
             DatagramSocket socket = new DatagramSocket();
             
-            
             InetAddress lDNSAddress = InetAddress.getByName(lDNSIP);
             
-            //create DNS query to send
-            String s = addressToQeuery+" A" ;
+            //TODO: Use the DNSQuery class to encode the question
+            String s = addressToQeuery+" V" ;
+            
             
             byte[] b = s.getBytes();
             
@@ -148,6 +148,8 @@ public class ApplicationClient {
             //parse the reply for the ip address
             byte[] data = reply.getData();
             s = new String(data, 0, reply.getLength());
+            
+            //TODO: use the DnsQuery class to parse for the answer
             
             socket.close();
             
@@ -192,17 +194,16 @@ public class ApplicationClient {
 		
 		System.out.println(hostFromURL);
 		
-		String ipOfHost ;//= getIP(LDNSIP, LDNSPORT, hostFromURL);
+		String ipOfHost = getIP(LDNSIP, LDNSPORT, hostFromURL);
 		
-		ipOfHost = "localhost";
+		//ipOfHost = "localhost";
 		
 		//query the web server
 		p = getData(ipOfHost, 5001, urlSelected.getFile());
 	    
 		path = p.getFile();
-		//data = readFile(path);
 		
-		
+		//TODO: Play File here
 		
 		System.out.println(path);
 		
