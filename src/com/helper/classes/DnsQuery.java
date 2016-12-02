@@ -21,7 +21,7 @@ public class DnsQuery {
 	public DnsQuery(String data){
 		
 		String query = data;
-		String delims = "[ ]";
+		String delims = "[ ]+";
 		String[] tokens = query.split(delims);
 		
 		if(tokens.length == 3){
