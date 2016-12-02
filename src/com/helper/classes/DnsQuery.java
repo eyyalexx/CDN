@@ -3,81 +3,78 @@ package com.helper.classes;
 public class DnsQuery {
 
 	
-	private Short identification;
-	private Short flags; //0 for questions and 1 for response (state of query)
-	private Short NumberOfQuestions;
-	private Short NumberOfAnswers;
-	private Short NumberOfAuthority;
-	private Short NumberOfAdditional;
-	private String questions;
-	private String answers;
-	private String authority;
+	private String identification;
+	private int flag; //0 for questions and 1 for response (state of query)
+	//private int NumberOfQuestions;
+	//private int NumberOfAnswers;
+	//private int NumberOfAuthority;
+	//private int NumberOfAdditional;
+	//above total of 12 bytes
+	
+	private String question;
+	private String answer;
+	//private String authority; 
 	
 	
-	public DnsQuery(Short identification, Short flags, Short NumberOfQuestions, 
-					Short NumberOfAnswers, Short NumberOfAuthority, Short NumberOfAdditional,
-					String questions, String answers, String authority){
+	public DnsQuery(String id, int flag, String question, String answer){
 		
-		this.identification = identification;
-		this.flags = flags;
-		this.NumberOfQuestions = NumberOfQuestions;
+		this.identification = id;
+		this.flag = flag;
+		this.question = question;
+		this.answer = answer;
 		
-		//Query with/without answers
-		if(NumberOfAnswers == 0){
-			answers = "";
-		} else {
-			this.answers = answers;
+	}
+	
+	public DnsQuery(String data){
+		
+		
+		
+	}
+	
+	public boolean isQuestion(){
+		if(this.flag == 0){
+			return true;			//is a question
+		} else if(this.flag == 1) {
+			return false;			//is a response
 		}
 		
-		this.NumberOfAnswers = NumberOfAnswers;
-		this.NumberOfAuthority = NumberOfAuthority;
-		this.NumberOfAdditional = NumberOfAdditional;
-		this.questions = questions;
-		this.authority = authority;
-	}
-	
-	public String getQuery(){
-		String query;
-		
+		return false;
 
-		
-		
-		return "";
 	}
 	
-	public Short getID(){
+
+	
+	public void addAnswer(String answer){
+		this.answer = answer;
+	}
+	
+	//get query
+	public String getQuery(){
+		
+		if(answer == ""){
+			String query = this.identification + " " + this.flag + " " + this.question + " ";
+			return query;
+		} else {
+			String query = this.identification + " " + this.flag + " " + this.question + " " + this.answer;
+			return query;
+		}
+		
+	}
+	
+	public String getID(){
 		return this.identification;
 	}
 	
-	public Short getFlags(){
-		return this.flags;
+	public int getFlag(){
+		return this.flag;
 	}
 	
-	public Short getNumberOfQuestions(){
-		return this.NumberOfQuestions;
-	}
-
-	public Short getNumberOfAnswers(){
-		return this.NumberOfAnswers;
+	public String getAnswer(){
+		return this.answer;
 	}
 	
-	public Short getNumberOfAuthority(){
-		return this.NumberOfAuthority;
+	public String getQuestion(){
+		return this.question;
 	}
 	
-	public Short getNumberOfAdditional(){
-		return this.NumberOfAdditional;
-	}
-	
-	public String getanswers(){
-		return this.answers;
-	}
-	
-	public String getquestions(){
-		return this.questions;
-	}
-	
-	public String getauthority(){
-		return this.authority;
-	}
 }
