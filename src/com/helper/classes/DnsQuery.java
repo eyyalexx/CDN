@@ -2,18 +2,11 @@ package com.helper.classes;
 
 public class DnsQuery {
 
-	
 	private String identification;
 	private int flag; //0 for questions and 1 for response (state of query)
-	//private int NumberOfQuestions;
-	//private int NumberOfAnswers;
-	//private int NumberOfAuthority;
-	//private int NumberOfAdditional;
-	//above total of 12 bytes
 	
 	private String question;
-	private String answer;
-	//private String authority; 
+	private String answer; 
 	
 	
 	public DnsQuery(String id, int flag, String question, String answer){
@@ -27,9 +20,25 @@ public class DnsQuery {
 	
 	public DnsQuery(String data){
 		
+		String query = data;
+		String delims = "[ ]";
+		String[] tokens = query.split(delims);
 		
+		if(tokens.length == 3){
+			this.identification = tokens[0];
+			this.flag = Integer.parseInt(tokens[1]);
+			this.question = tokens[2];
+			this.answer = tokens[3];
+		}
+		
+		if(tokens.length == 2){
+			this.identification = tokens[0];
+			this.flag = Integer.parseInt(tokens[1]);
+			this.question = tokens[2];
+		}
 		
 	}
+	
 	
 	public boolean isQuestion(){
 		if(this.flag == 0){
@@ -39,7 +48,6 @@ public class DnsQuery {
 		}
 		
 		return false;
-
 	}
 	
 
