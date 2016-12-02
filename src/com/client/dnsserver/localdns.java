@@ -3,6 +3,8 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
+import com.helper.classes.DnsRecord;
+
 public class localdns {
 
 	public static void main(String[] args) {

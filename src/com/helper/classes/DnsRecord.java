@@ -1,4 +1,4 @@
-package com.client.dnsserver;
+package com.helper.classes;
 
 public class DnsRecord {
 

@@ -1,4 +1,4 @@
-package com.client.browser;
+package com.helper.classes;
 
 public class Packet {
 

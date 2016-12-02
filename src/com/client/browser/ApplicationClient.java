@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
+import com.helper.classes.Packet;
+
 
 public class ApplicationClient {
 
