@@ -21,17 +21,18 @@ public class DnsQuery {
 	public DnsQuery(String data){
 		
 		String query = data;
-		String delims = " ";
+		String delims = "[ ]+";
 		String[] tokens = query.split(delims);
 		
-		if(tokens.length == 3){
+		if(tokens.length == 4){
+			
 			this.identification = tokens[0];
 			this.flag = Integer.parseInt(tokens[1]);
 			this.question = tokens[2];
 			this.answer = tokens[3];
 		}
 		
-		if(tokens.length == 2){
+		if(tokens.length == 3){
 			this.identification = tokens[0];
 			this.flag = Integer.parseInt(tokens[1]);
 			this.question = tokens[2];
