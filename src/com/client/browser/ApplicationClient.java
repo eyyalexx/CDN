@@ -5,7 +5,7 @@ import java.net.*;
 import java.util.Scanner;
 
 
-public class applicationClient {
+public class ApplicationClient {
 
 	private static final String LDNSIP = "localhost";
 	private static final String WEBSERVERIP = "localhost";
@@ -177,11 +177,10 @@ public class applicationClient {
 			System.out.println("Link " + (i+1) + ": " +options[i]);
 		}
 		
-		//allow the use to pick a link to go to 
+		//allow the user to pick a link to go to 
 	    Scanner in = new Scanner(System.in);
 		System.out.print("Select your link(1,2,3 or 4): ");
 		int userInput = in.nextInt();
-		
 		in.close();
 		
 		URL urlSelected = new URL(options[userInput-1]); //offset because links starts from 1

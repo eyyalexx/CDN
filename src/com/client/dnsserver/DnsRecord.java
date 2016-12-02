@@ -1,19 +1,19 @@
 package com.client.dnsserver;
 
-public class dnsRecord {
+public class DnsRecord {
 
 	private String name;
-	private int val;
+	private String val;
 	private String type;
 	
 	//default constructor
-	public dnsRecord(){
+	public DnsRecord(){
 		name = "";
-		val = 0;
+		val = "";
 		type = "";
 	}
 	
-	public dnsRecord(String name, int value, String tpye){
+	public DnsRecord(String name, String value, String tpye){
 		this.name = name;
 		this.val = value;
 		this.type = type;
@@ -25,7 +25,7 @@ public class dnsRecord {
 		return(this.name);
 	}
 	
-	public int getVal(){
+	public String getVal(){
 		return(this.val);
 	}
 	

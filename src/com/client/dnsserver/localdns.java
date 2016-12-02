@@ -27,14 +27,19 @@ public class localdns {
             {
                 sock.receive(incoming);
                 byte[] data = incoming.getData();
+                
+                //incoming record
                 String s = new String(data, 0, incoming.getLength());
                  
                 //echo the details of incoming data - client ip : client port - client message
-                echo(incoming.getAddress().getHostAddress() + " : " + incoming.getPort() + " - " + s);
+                //echo(incoming.getAddress().getHostAddress() + " : " + incoming.getPort() + " - " + s);
                  
                 s = "OK : " + s;
+                
+                //send back to client
                 DatagramPacket dp = new DatagramPacket(s.getBytes() , s.getBytes().length , incoming.getAddress() , incoming.getPort());
                 sock.send(dp);
+                
             }
         }
          
