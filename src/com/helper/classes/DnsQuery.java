@@ -35,6 +35,7 @@ public class DnsQuery {
 			this.identification = tokens[0];
 			this.flag = Integer.parseInt(tokens[1]);
 			this.question = tokens[2];
+			this.answer = "";
 		}
 		
 	}
@@ -56,7 +57,7 @@ public class DnsQuery {
 		this.answer = answer;
 	}
 	
-	//get query
+	//get query only
 	public String getQuery(){
 		
 		if(answer == ""){
