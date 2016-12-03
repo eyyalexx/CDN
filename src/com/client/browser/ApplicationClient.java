@@ -211,10 +211,10 @@ public class ApplicationClient {
 		path = p.getFile();
 		
 		//TODO: Play File here
-		
-		playFile();
-		
 		System.out.println(path);
+		playFile(path);
+		
+		
 		
 	}
 	
@@ -233,12 +233,12 @@ public class ApplicationClient {
 		return data;
 	}
 	
-	public static void playFile() throws IOException{
+	public static void playFile(String path) throws IOException{
 		
 		if(System.getProperty("os.name").contains("Linux")){
 			
 			//LINUX PATH BELOW
-			Runtime.getRuntime().exec("vlc /CDN-master/localhost5001/SampleVideo_720x480_30mb.mp4");
+			Runtime.getRuntime().exec("vlc "+path);
 		}
 	
 		if(System.getProperty("os.name").contains("Windows")){

@@ -127,6 +127,7 @@ public class Localdns {
                 		for(QuestionAsked q : questions){
                     		if(q.getQuery().getID().equals(queryRec.getID())){//if ids are equals
                     			qToSendBackTo = q;
+                    			questions.remove(q);
                     			break;
                     		}
                     	}
