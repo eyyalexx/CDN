@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
+import com.helper.classes.DnsQuery;
 import com.helper.classes.Packet;
 
 
@@ -123,19 +124,21 @@ public class ApplicationClient {
 	//UDP conncetion to local DNS
 	public static String getIP(String lDNSIP, int lDNSPort, String addressToQeuery){
         
+		DnsQuery dnsReply = null;
         try
         {
             DatagramSocket socket = new DatagramSocket();
             
             InetAddress lDNSAddress = InetAddress.getByName(lDNSIP);
-            
+           
+            String q = addressToQeuery+";V" ;
             //TODO: Use the DNSQuery class to encode the question
-            String s = addressToQeuery+" V" ;
+            DnsQuery queryToSend = new DnsQuery("6", 0, q, "");
             
+            byte[] msgToSend = queryToSend.getQuery().getBytes();
+           
             
-            byte[] b = s.getBytes();
-            
-            DatagramPacket  dp = new DatagramPacket(b , b.length, lDNSAddress, lDNSPort);
+            DatagramPacket  dp = new DatagramPacket(msgToSend, msgToSend.length, lDNSAddress, lDNSPort);
             socket.send(dp);
             
             
@@ -147,9 +150,11 @@ public class ApplicationClient {
             
             //parse the reply for the ip address
             byte[] data = reply.getData();
-            s = new String(data, 0, reply.getLength());
+            String s = new String(data, 0, reply.getLength());
             
             //TODO: use the DnsQuery class to parse for the answer
+            dnsReply = new DnsQuery(s);
+            
             
             socket.close();
             
@@ -159,9 +164,14 @@ public class ApplicationClient {
         {
             System.err.println("IOException " + e);
         }
- 
+        
+        String answer = dnsReply.getAnswer();
+        String[] parse = answer.split(";");//host, type, val
+        
+		System.out.println(answer);
 		
-		return "localhost";
+		
+		return parse[2];
 	}
 	
 	//Main

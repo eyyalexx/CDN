@@ -13,7 +13,7 @@ public class DnsRecord {
 		type = "";
 	}
 	
-	public DnsRecord(String name, String value, String tpye){
+	public DnsRecord(String name, String value, String type){
 		this.name = name;
 		this.val = value;
 		this.type = type;

@@ -8,9 +8,10 @@ import com.helper.classes.DnsRecord;
 
 public class Localdns {
 
-	private static final String IPher = "";
-	private static final String IPhis = "";
+	private static final String IPher = "localhost";
+	private static final String IPhis = "localhost";
 	private static final int ADNSPORT = 5005; 
+	private static final int LDNSPORT = 5003;// my port
 	
 	
 	//given a host, find the dns with the ip
@@ -18,6 +19,8 @@ public class Localdns {
 		for(DnsRecord r : records){
 			if(r.getName().equals(host)){
 				if(r.getType().equals("A")){
+					return r;
+				}else if(r.getType().equals("R")){
 					return r;
 				}else{
 					return findDNS(r.getVal() ,records);
@@ -34,7 +37,7 @@ public class Localdns {
 		
 		records.add(new DnsRecord("herCDN.com", "NSherCDN.com", "NS"));
 		records.add(new DnsRecord("NSherCDN.com", IPher, "A"));
-		records.add(new DnsRecord("hiscinema.com", "NShiscinema.com", "NS"));
+		records.add(new DnsRecord("video.hiscinema.com", "NShiscinema.com", "NS"));
 		records.add(new DnsRecord("NShiscinema.com", IPhis, "A"));
 		
 		ArrayList<QuestionAsked> questions = new ArrayList<QuestionAsked>();
@@ -44,12 +47,12 @@ public class Localdns {
         try
         {
             //1. creating a server socket, parameter is local port number
-            sock = new DatagramSocket(5000);
+            sock = new DatagramSocket(LDNSPORT);
              
             //buffer to receive incoming data
             byte[] buffer = new byte[1024];
             DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
-             
+            
             //2. Wait for an incoming data
             echo("Server socket created. Waiting for incoming data...");
              
@@ -68,13 +71,17 @@ public class Localdns {
                 String addressOfSender = incoming.getAddress().getHostAddress();
                 int portOfSender = incoming.getPort();
                 
+                InetAddress ipToQuery;
+                int portToSendTo;
+                byte[] dataToSend;
+                
                 //if question: create new question
                 if(queryRec.isQuestion()){
                 	QuestionAsked q = new QuestionAsked(addressOfSender, portOfSender,queryRec);
                 	questions.add(q);
                 	
                 	String question = queryRec.getQuestion();
-                	String[] hostAndType = question.split(" ");
+                	String[] hostAndType = question.split(";");
                 	
                 	String qHost = hostAndType[0];
                 	String qType = hostAndType[1]; // should be V in most cases
@@ -85,27 +92,50 @@ public class Localdns {
                 	
                 	//prepare to send
                 	
-                    InetAddress ipToQuery = InetAddress.getByName(whoToQuery.getVal());
-                    
+                    ipToQuery = InetAddress.getByName(whoToQuery.getVal());
+                    portToSendTo = ADNSPORT;
                  
-                    byte[] b = queryRec.getQuery().getBytes();
+                    dataToSend = queryRec.getQuery().getBytes();
                     
-                    DatagramPacket  dp = new DatagramPacket(b , b.length, ipToQuery, ADNSPORT);
-                    sock.send(dp);
-                	
                 }else{//if answer:
                 	
-                	
+                	String answer = queryRec.getAnswer();
+                	String[] valType = answer.split(";"); // value
+                	if(valType[1].equals("R")){//type == R
+                		//send query to the redirect link
+                		
+                		DnsRecord dnsToQuery = findDNS(valType[0], records);
+                		
+                		ipToQuery = InetAddress.getByName(dnsToQuery.getVal());
+                		portToSendTo = ADNSPORT;
+                		
+                		queryRec.addAnswer(""); //remove the answer so it looks like a question query 
+                		dataToSend = queryRec.getQuery().getBytes();
+                		
+                	}else{//type == A
+                		//send answer back to the question and remove from arrayList
+                		
+                		QuestionAsked qToSendBackTo= null;
+                		
+                		//find the question with the same id
+                		for(QuestionAsked q : questions){
+                    		if(q.getQuery().getID().equals(queryRec.getID())){//if ids are equals
+                    			qToSendBackTo = q;
+                    			break;
+                    		}
+                    	}
+                		
+                		ipToQuery = InetAddress.getByName(qToSendBackTo.getIpOfSender());
+                		portToSendTo = qToSendBackTo.getPortOfSender();
+                		
+                		dataToSend = queryRec.getQuery().getBytes();
+                	}
                 	
                 }
                 
-                /*
-                s = "OK : " + s;
-                
-                //send back to client
-                DatagramPacket dp = new DatagramPacket(s.getBytes() , s.getBytes().length , incoming.getAddress() , incoming.getPort());
+                //send data
+                DatagramPacket  dp = new DatagramPacket(dataToSend , dataToSend.length, ipToQuery, portToSendTo);
                 sock.send(dp);
-                */
                 
             }
         }
