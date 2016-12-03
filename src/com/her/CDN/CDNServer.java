@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import com.helper.classes.Addresses;
 import com.hiscinema.webserver.*;
 
 public class CDNServer {
-
-    static final int PORT = 5001;
 
     public static void main(String args[]) throws IOException {
     	
@@ -19,8 +18,8 @@ public class CDNServer {
         FileSystem fs = new FileSystem("public2");
 
         try {
-            serverSocket = new ServerSocket(PORT);
-            System.out.println("Server Listening on port "+PORT);
+            serverSocket = new ServerSocket(Addresses.CDNSERVERPORT);
+            System.out.println("Server Listening on port "+serverSocket.getLocalPort());
         } catch (IOException e) {
             e.printStackTrace();
 

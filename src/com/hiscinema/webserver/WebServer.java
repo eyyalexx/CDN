@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class WebServer {
+import com.helper.classes.Addresses;
 
-    static final int PORT = 5000;
+public class WebServer {
 
     public static void main(String args[]) throws IOException {
     	
@@ -17,8 +17,8 @@ public class WebServer {
         FileSystem fs = new FileSystem("public");
 
         try {
-            serverSocket = new ServerSocket(PORT);
-            System.out.println("Server Listening on port "+PORT);
+            serverSocket = new ServerSocket(Addresses.WEBSERVERPORT);
+            System.out.println("Server Listening on port "+serverSocket.getLocalPort());
         } catch (IOException e) {
             e.printStackTrace();
 

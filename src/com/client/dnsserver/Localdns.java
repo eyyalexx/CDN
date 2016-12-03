@@ -3,17 +3,12 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
+import com.helper.classes.Addresses;
 import com.helper.classes.DnsQuery;
 import com.helper.classes.DnsRecord;
 
 public class Localdns {
-
-	private static final String IPher = "localhost";
-	private static final String IPhis = "localhost";
-	private static final int ADNSPORT = 5005; 
-	private static final int LDNSPORT = 5003;// my port
-	
-	
+		
 	//given a host, find the dns with the ip
 	public static DnsRecord findDNS(String host, ArrayList<DnsRecord> records){
 		for(DnsRecord r : records){
@@ -36,9 +31,9 @@ public class Localdns {
 		ArrayList<DnsRecord> records = new ArrayList<DnsRecord>(); 
 		
 		records.add(new DnsRecord("herCDN.com", "NSherCDN.com", "NS"));
-		records.add(new DnsRecord("NSherCDN.com", IPher, "A"));
+		records.add(new DnsRecord("NSherCDN.com", Addresses.HERDNSIP, "A"));
 		records.add(new DnsRecord("video.hiscinema.com", "NShiscinema.com", "NS"));
-		records.add(new DnsRecord("NShiscinema.com", IPhis, "A"));
+		records.add(new DnsRecord("NShiscinema.com", Addresses.HISDNSIP, "A"));
 		
 		ArrayList<QuestionAsked> questions = new ArrayList<QuestionAsked>();
 		
@@ -47,7 +42,7 @@ public class Localdns {
         try
         {
             //1. creating a server socket, parameter is local port number
-            sock = new DatagramSocket(LDNSPORT);
+            sock = new DatagramSocket(Addresses.LOCALDNSPORT);
              
             //buffer to receive incoming data
             byte[] buffer = new byte[1024];
@@ -93,24 +88,35 @@ public class Localdns {
                 	//prepare to send
                 	
                     ipToQuery = InetAddress.getByName(whoToQuery.getVal());
-                    portToSendTo = ADNSPORT;
-                 
+                    
+                    if(Addresses.ONEMACHINE){
+                    	portToSendTo = Addresses.HISDNSPORT;
+                    }else{
+                    	portToSendTo = Addresses.ADNSPORT;
+                    }
+                    
                     dataToSend = queryRec.getQuery().getBytes();
                     
                 }else{//if answer:
                 	
                 	String answer = queryRec.getAnswer();
-                	String[] valType = answer.split(";"); // value
-                	if(valType[1].equals("R")){//type == R
+                	String[] valType = answer.split(";"); // value, type
+                	if(valType[1].equals("NS")){//type == NS
                 		//send query to the redirect link
                 		
                 		DnsRecord dnsToQuery = findDNS(valType[0], records);
                 		
                 		ipToQuery = InetAddress.getByName(dnsToQuery.getVal());
-                		portToSendTo = ADNSPORT;
                 		
-                		queryRec.addAnswer(""); //remove the answer so it looks like a question query 
-                		dataToSend = queryRec.getQuery().getBytes();
+                		if(Addresses.ONEMACHINE){
+                			portToSendTo = Addresses.HERDNSPORT;
+                		}else{
+                			portToSendTo = Addresses.ADNSPORT;
+                		}
+                		//(String id, int flag, String question, String answer)
+                		DnsQuery toSend = new DnsQuery(queryRec.getID(), 0, valType[0]+";A", "");
+                		
+                		dataToSend = toSend.getQuery().getBytes();
                 		
                 	}else{//type == A
                 		//send answer back to the question and remove from arrayList
@@ -139,7 +145,7 @@ public class Localdns {
                 
             }
         }
-         
+        
         catch(IOException e)
         {
             System.err.println("IOException " + e);

@@ -4,16 +4,13 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
+import com.helper.classes.Addresses;
 import com.helper.classes.DnsQuery;
 import com.helper.classes.Packet;
 
 
 public class ApplicationClient {
 
-	private static final String LDNSIP = "localhost";
-	private static final String WEBSERVERIP = "localhost";
-	private static final int WEBPORT = 5000;
-	private static final int LDNSPORT = 5003;
 	private static final String HTTPVERSION = "HTTP/1.1";
 	private static final int MAX_PACKET_SIZE = 65535;
 	
@@ -166,12 +163,12 @@ public class ApplicationClient {
         }
         
         String answer = dnsReply.getAnswer();
-        String[] parse = answer.split(";");//host, type, val
+        String[] parse = answer.split(";");//val, type
         
 		System.out.println(answer);
 		
 		
-		return parse[2];
+		return parse[0];
 	}
 	
 	//Main
@@ -180,7 +177,7 @@ public class ApplicationClient {
 		String urlToQueryWebServer = "/index.html";
 		
 		//query the web server
-		Packet p = getData(WEBSERVERIP, WEBPORT, urlToQueryWebServer);
+		Packet p = getData(Addresses.WEBSERVERIP, Addresses.WEBSERVERPORT, urlToQueryWebServer);
 	    
 		String path = p.getFile();
 		String data = readFile(path);
@@ -204,12 +201,14 @@ public class ApplicationClient {
 		
 		System.out.println(hostFromURL);
 		
-		String ipOfHost = getIP(LDNSIP, LDNSPORT, hostFromURL);
+		String ipOfHost = getIP(Addresses.LOCALDNSIP, Addresses.LOCALDNSPORT, hostFromURL);
 		
 		//ipOfHost = "localhost";
 		
-		//query the web server
-		p = getData(ipOfHost, 5001, urlSelected.getFile());
+		System.out.println("IP: "+ ipOfHost);
+		
+		//query the CDN Server
+		p = getData(ipOfHost, Addresses.CDNSERVERPORT, urlSelected.getFile());
 	    
 		path = p.getFile();
 		

@@ -4,14 +4,11 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
-import com.client.dnsserver.QuestionAsked;
+import com.helper.classes.Addresses;
 import com.helper.classes.DnsQuery;
 import com.helper.classes.DnsRecord;
 
-public class ADNSServer {
-
-	private static final int ADNSPORT = 5005;// my port
-	
+public class HisDNSServer {
 	
 	//given a host, find the dns with the ip
 	public static DnsRecord findDNS(String host, ArrayList<DnsRecord> records){
@@ -42,7 +39,11 @@ public class ADNSServer {
         try
         {
             //1. creating a server socket, parameter is local port number
-            sock = new DatagramSocket(ADNSPORT);
+        	if(Addresses.ONEMACHINE){
+        		sock = new DatagramSocket(Addresses.HISDNSPORT);
+        	}else{
+        		sock = new DatagramSocket(Addresses.ADNSPORT);
+        	}
              
             //buffer to receive incoming data
             byte[] buffer = new byte[1024];
@@ -84,7 +85,7 @@ public class ADNSServer {
                 portToSendTo = portOfSender;
                 
                 //(String id, int flag, String question, String answer)
-                DnsQuery answerToSendBack = new DnsQuery(queryRec.getID(), 1, queryRec.getQuestion(), dnsToQuery.getVal()+";"+dnsToQuery.getType());
+                DnsQuery answerToSendBack = new DnsQuery(queryRec.getID(), 1, queryRec.getQuestion(), dnsToQuery.getVal()+";NS");
                 
                 
                 dataToSend = answerToSendBack.getQuery().getBytes();
