@@ -14,8 +14,8 @@ public class Adresses {
 	public final static String HISCINEMAIP = "localhost";
 	public final static String HISCINEMAPORT = "";
 	
-	public final static String HISCINEMAAUTHIP = "localhost";
-	public final static String HISCINEMAAUTHPORT = "";
+	public final static String HISIP = "localhost";
+	public final static String HISPORT = "";
 	
 	public final static String HERCDNIP = "localhost";
 	public final static String HERCDNPORT = "";
