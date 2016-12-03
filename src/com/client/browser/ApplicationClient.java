@@ -201,15 +201,7 @@ public class ApplicationClient {
 		
 		System.out.println(hostFromURL);
 		
-<<<<<<< HEAD
 		String ipOfHost = getIP(Addresses.LOCALDNSIP, Addresses.LOCALDNSPORT, hostFromURL);
-=======
-		//String ipOfHost = getIP(LDNSIP, LDNSPORT, hostFromURL);
->>>>>>> 7949d6285f2ec6a510a8ea3db5ba056a08db7de9
-		
-		//String ipOfHost = "localhost";
-		
-		String ipOfHost = WEBSERVERIP; 
 		
 		System.out.println("IP: "+ ipOfHost);
 		
