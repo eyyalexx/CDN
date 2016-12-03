@@ -201,9 +201,15 @@ public class ApplicationClient {
 		
 		System.out.println(hostFromURL);
 		
+<<<<<<< HEAD
 		String ipOfHost = getIP(Addresses.LOCALDNSIP, Addresses.LOCALDNSPORT, hostFromURL);
+=======
+		//String ipOfHost = getIP(LDNSIP, LDNSPORT, hostFromURL);
+>>>>>>> 7949d6285f2ec6a510a8ea3db5ba056a08db7de9
 		
-		//ipOfHost = "localhost";
+		//String ipOfHost = "localhost";
+		
+		String ipOfHost = WEBSERVERIP; 
 		
 		System.out.println("IP: "+ ipOfHost);
 		
@@ -213,6 +219,8 @@ public class ApplicationClient {
 		path = p.getFile();
 		
 		//TODO: Play File here
+		
+		playFile();
 		
 		System.out.println(path);
 		
@@ -231,6 +239,22 @@ public class ApplicationClient {
 		}
 		
 		return data;
+	}
+	
+	public static void playFile() throws IOException{
+		
+		if(System.getProperty("os.name").contains("Linux")){
+			
+			//LINUX PATH BELOW
+			Runtime.getRuntime().exec("vlc /CDN-master/localhost5001/SampleVideo_720x480_30mb.mp4");
+		}
+	
+		if(System.getProperty("os.name").contains("Windows")){
+			//c/Users/Alex/Documents/GitHub/CDN/cache/localhost5001
+			//WINDOWS PATH BELOW
+			Runtime.getRuntime().exec("C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe C:\\Users\\Alex\\Documents\\GitHub\\CDN\\cache\\localhost5001\\SampleVideo_720x480_30mb.mp4");
+	
+		}
 	}
 
 }
