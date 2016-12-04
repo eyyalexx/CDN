@@ -32,7 +32,7 @@ public class Localdns {
 		
 		records.add(new DnsRecord("herCDN.com", "NSherCDN.com", "NS"));
 		records.add(new DnsRecord("NSherCDN.com", Addresses.HERDNSIP, "A"));
-		records.add(new DnsRecord("video.hiscinema.com", "NShiscinema.com", "NS"));
+		records.add(new DnsRecord("hiscinema.com", "NShiscinema.com", "NS"));
 		records.add(new DnsRecord("NShiscinema.com", Addresses.HISDNSIP, "A"));
 		
 		ArrayList<QuestionAsked> questions = new ArrayList<QuestionAsked>();
@@ -79,11 +79,19 @@ public class Localdns {
                 	String[] hostAndType = question.split(";");
                 	
                 	String qHost = hostAndType[0];
+                	
+                	String dotCom = qHost.substring(qHost.lastIndexOf("."));
+                	String hostName = qHost.substring(0, qHost.lastIndexOf("."));
+                	String hostName2 = hostName.substring(hostName.lastIndexOf(".")+1);
+                	
+                	String fHostName = hostName2+dotCom;
+                	
                 	String qType = hostAndType[1]; // should be V in most cases
                 	
                 	
+                	
                 	//send query based on records
-                	DnsRecord whoToQuery = findDNS(qHost, records);
+                	DnsRecord whoToQuery = findDNS(fHostName, records);
                 	
                 	//prepare to send
                 	
