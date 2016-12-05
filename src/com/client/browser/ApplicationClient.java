@@ -39,7 +39,8 @@ public class ApplicationClient {
         Packet packet = new Packet();
         
         try {
-
+        	
+        	System.out.println("Contacting webserver at: "+ webServIP+":"+webServPort +" with request: "+request);
 			// Send the request to Webserver.
 			Socket socket = new Socket(webServIP, webServPort);
 
@@ -114,6 +115,8 @@ public class ApplicationClient {
             e.printStackTrace();
             System.exit(1);
         }
+        System.out.println("Received file from webserver: "+ packet.getFile());
+        
         return packet;
 	}
 	
@@ -134,6 +137,7 @@ public class ApplicationClient {
             
             byte[] msgToSend = queryToSend.getQuery().getBytes();
            
+            System.out.println("Contacting Local DNS server with query: "+queryToSend.getQuery());
             
             DatagramPacket  dp = new DatagramPacket(msgToSend, msgToSend.length, lDNSAddress, lDNSPort);
             socket.send(dp);
@@ -165,8 +169,7 @@ public class ApplicationClient {
         String answer = dnsReply.getAnswer();
         String[] parse = answer.split(";");//val, type
         
-		System.out.println(answer);
-		
+		System.out.println("Recieved answer from local DNS: "+answer);
 		
 		return parse[0];
 	}
@@ -210,8 +213,6 @@ public class ApplicationClient {
 	    
 		path = p.getFile();
 		
-		//TODO: Play File here
-		System.out.println(path);
 		playFile(path);
 		
 		
@@ -244,7 +245,7 @@ public class ApplicationClient {
 		if(System.getProperty("os.name").contains("Windows")){
 			//c/Users/Alex/Documents/GitHub/CDN/cache/localhost5001
 			//WINDOWS PATH BELOW
-			Runtime.getRuntime().exec("C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe C:\\Users\\Alex\\Documents\\GitHub\\CDN\\cache\\localhost5001\\SampleVideo_720x480_30mb.mp4");
+			Runtime.getRuntime().exec("C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe "+path);
 	
 		}
 	}

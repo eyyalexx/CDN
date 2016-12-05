@@ -105,12 +105,16 @@ public class Localdns {
                     
                     dataToSend = queryRec.getQuery().getBytes();
                     
+                    System.out.println("Sending DNS query to: "+ipToQuery+":"+portToSendTo+" with data: "+queryRec.getQuery());
+                    
                 }else{//if answer:
                 	
                 	String answer = queryRec.getAnswer();
                 	String[] valType = answer.split(";"); // value, type
                 	if(valType[1].equals("NS")){//type == NS
                 		//send query to the redirect link
+                		
+                		System.out.println("A NS reply received by: "+ addressOfSender+":"+portOfSender+" containing: "+ answer);
                 		
                 		DnsRecord dnsToQuery = findDNS(valType[0], records);
                 		
@@ -126,8 +130,12 @@ public class Localdns {
                 		
                 		dataToSend = toSend.getQuery().getBytes();
                 		
+                		System.out.println("Sending DNS query to: "+ipToQuery+":"+portToSendTo+" with data: "+queryRec.getQuery());
+                		
                 	}else{//type == A
                 		//send answer back to the question and remove from arrayList
+                		
+                		System.out.println("An A reply received by: "+ addressOfSender+":"+portOfSender+" containing: "+ answer);
                 		
                 		QuestionAsked qToSendBackTo= null;
                 		
@@ -144,10 +152,10 @@ public class Localdns {
                 		portToSendTo = qToSendBackTo.getPortOfSender();
                 		
                 		dataToSend = queryRec.getQuery().getBytes();
+                		System.out.println("Sending reply back to the client: "+ipToQuery+":"+portToSendTo+" with data: "+queryRec.getQuery());
                 	}
                 	
                 }
-                
                 //send data
                 DatagramPacket  dp = new DatagramPacket(dataToSend , dataToSend.length, ipToQuery, portToSendTo);
                 sock.send(dp);
