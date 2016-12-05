@@ -202,11 +202,8 @@ public class ApplicationClient {
 		//parse the host name from the url
 		String hostFromURL = urlSelected.getHost();
 		
-		System.out.println(hostFromURL);
 		
 		String ipOfHost = getIP(Addresses.LOCALDNSIP, Addresses.LOCALDNSPORT, hostFromURL);
-		
-		System.out.println("IP: "+ ipOfHost);
 		
 		//query the CDN Server
 		p = getData(ipOfHost, Addresses.CDNSERVERPORT, urlSelected.getFile());
